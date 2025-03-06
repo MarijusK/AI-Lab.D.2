@@ -1,0 +1,160 @@
+package rules;
+
+import org.org.examples.Lab2.Classes.*;
+
+rule "Naudoti trąšas esant žemam dirvožemio pH"
+when
+    $dirvozemis: Soil(pH < 5.5)
+then
+    FarmerActions ukininkoVeiksmai = new FarmerActions();
+    Fertilizer trasos = new Fertilizer("Kalkinės trąšos");
+    ukininkoVeiksmai.applyFertilizer(trasos);
+    String message = "Dirvožemis su pH < 5.5 – naudojamos kalkinės trąšos.";
+    System.out.println("Vykdoma - " + message);
+end
+
+// Rule "Laistyti, jei dirvožemio drėgmė per maža"
+rule "Laistyti, jei dirvožemio drėgmė per maža"
+when
+    $dirvozemis: Soil(moisture < 30.0)
+then
+    IrrigationSystem laistymoSistema = new IrrigationSystem();
+    laistymoSistema.irrigate();
+    String message = "Dirvožemis su drėgmės lygiu < 30% – laistymas vykdomas.";
+    System.out.println("Vykdoma - " + message);
+end
+
+// Rule "Rekomenduoti kenkėjų kontrolės priemones, jei augalas pažeistas kenkėjų"
+rule "Rekomenduoti kenkėjų kontrolės priemones, jei augalas pažeistas kenkėjų"
+when
+    $augalas: Plant(healthStatus == "Kenkėjų pažeistas")
+then
+    PestControl kenkejuKontrole = new PestControl();
+    kenkejuKontrole.applyPesticide();
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – kenkėjų pažeistas. Naudojamas pesticidas.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Nutraukti laistymą, jei prognozuojamas lietus"
+rule "Nutraukti laistymą, jei prognozuojamas lietus"
+when
+    $oras: Weather(rainExpected == true)
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Prognozuojamas lietus – laistymas nereikalingas.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Rekomenduoti trąšas esant maistinių medžiagų trūkumui"
+rule "Rekomenduoti trąšas esant maistinių medžiagų trūkumui"
+when
+    $augalas: Plant(healthStatus == "Maistinių medžiagų trūkumas")
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – Maistinių medžiagų trūkumas. Rekomenduojama naudoti azoto turinčias trąšas.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Rekomenduoti laistymą esant vandens trūkumui"
+rule "Rekomenduoti laistymą esant vandens trūkumui"
+when
+    $augalas: Plant(healthStatus == "Vandens trūkumas")
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – Vandens trūkumas. Reikėtų dažniau laistyti augalą.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Įspėti apie perlaistymą"
+rule "Įspėti apie perlaistymą"
+when
+    $augalas: Plant(healthStatus == "Perlaistytas")
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – Perlaistytas. Mažinti laistymą, kad išvengtumėte šaknų puvimo.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Įspėti apie temperatūros stresą"
+rule "Įspėti apie temperatūros stresą"
+when
+    $augalas: Plant(healthStatus == "Stresas dėl temperatūros")
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – Stresas dėl temperatūros. Augalą reikėtų apsaugoti nuo ekstremalių temperatūrų.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Stebėti augalų būklę po pesticidų naudojimo"
+rule "Stebėti augalų būklę po pesticidų naudojimo"
+when
+    $augalas: Plant(healthStatus == "Sergantis")
+    $kenkejuKontrole: PestControl()
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – sergantis. Stebima po kenkėjų kontrolės priemonių.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Rekomenduoti sėjomainą dirvožemio sveikatai palaikyti"
+rule "Rekomenduoti sėjomainą dirvožemio sveikatai palaikyti"
+when
+    $augalas: Plant(type == "Kukurūzai")
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – Rekomenduojama sėjomaina su ankštiniais augalais.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Naudoti organines trąšas tvariam ūkininkavimui"
+rule "Naudoti organines trąšas tvariam ūkininkavimui"
+when
+    $dirvozemis: Soil(pH >= 6.0 && pH <= 7.0)
+then
+    FarmerActions ukininkoVeiksmai = new FarmerActions();
+    Fertilizer trasos = new Fertilizer("Kompostas arba mėšlas");
+    ukininkoVeiksmai.applyFertilizer(trasos);
+    String message = "Dirvožemis su pH 6.0 - 7.0 – naudojamos organinės trąšos (kompostas arba mėšlas).";
+    System.out.println("Vykdoma - " + message);
+end
+
+// Rule "Įspėti apie dirvožemio suspaudimą"
+rule "Įspėti apie dirvožemio suspaudimą"
+when
+    $dirvozemis: Soil(moisture > 40.0 && pH >= 5.5 && pH <= 7.5)
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Dirvožemis su drėgmė > 40% – gali būti per daug suspaustas. Rekomenduojama purenimą.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Įspėti apie augalų per tankų sodinimą"
+rule "Įspėti apie augalų per tankų sodinimą"
+when
+    $augalas: Plant(type == "Morkos" || type == "Ropės" || type == "Burokėliai")
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Augalas: " + $augalas.getType() + " – Per tankus sodinimas. Rekomenduojama tinkamas atstumas.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Apsaugoti augalus nuo šalčio, jei prognozuojama žema temperatūra"
+rule "Apsaugoti augalus nuo šalčio, jei prognozuojama žema temperatūra"
+when
+    $oras: Weather(temperature < 5.0)
+then
+    Recommendation recommendation = new Recommendation();
+    String message = "Prognozuojamas šaltis – apsvarstykite augalų uždengimą ar šiltnamio naudojimą.";
+    recommendation.suggestAction(message);
+end
+
+// Rule "Rekomenduoti papildomą tręšimą derliaus nuėmimo sezono metu"
+rule "Rekomenduoti papildomą tręšimą derliaus nuėmimo sezono metu"
+when
+    $augalas: Plant(type == "Kviečiai" || type == "Rapsai" || type == "Bulvės")
+then
+    Recommendation recommendation = new Recommendation();
+    String message = $augalas.getType() + " - Derliaus nuėmimo sezono metu naudokite papildomas maistines medžiagas, kad išlaikytumėte dirvožemio derlingumą.";
+    recommendation.suggestAction(message);
+end

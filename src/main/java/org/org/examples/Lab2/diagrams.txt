@@ -1,0 +1,159 @@
+Class diagram
+
+@startuml
+
+class FarmerActions {
+    +applyFertilizer(fertilizer: Fertilizer)
+}
+
+class Fertilizer {
+    -type: String
+    +getType(): String
+}
+
+class IrrigationSystem {
+    +irrigate()
+}
+
+class PestControl {
+    +applyPesticide()
+}
+
+class Plant {
+    -type: String
+    -healthStatus: String
+    +getType(): String
+    +getHealthStatus(): String
+}
+
+class Recommendation {
+    +suggestAction(action: String)
+}
+
+class Soil {
+    -moisture: double
+    -pH: double
+    +getMoisture(): double
+    +getpH(): double
+}
+
+class Weather {
+    -temperature: double
+    -rainExpected: boolean
+    +getTemperature(): double
+    +isRainExpected(): boolean
+}
+
+FarmerActions --> Fertilizer : uses
+FarmerActions --> Soil : uses
+FarmerActions --> Weather : uses
+FarmerActions --> PestControl : uses
+FarmerActions --> Recommendation : uses
+IrrigationSystem --> Soil : depends on
+PestControl --> Plant : applies to
+Recommendation --> Plant : suggests actions
+
+@enduml
+
+/////////////////////////
+
+@enduml
+Activity diagram
+@startuml
+
+start
+
+:Check Soil pH;
+if (pH < 5.5) then (yes)
+  :Apply Lime Fertilizer;
+  :Output: "Apply calcic fertilizer";
+else (no)
+  :Check other conditions;
+endif
+
+:Check Soil Moisture;
+if (moisture < 30) then (yes)
+  :Irrigate the soil;
+  :Output: "Soil irrigation";
+else (no)
+  :No irrigation needed;
+endif
+
+:Check Plant Health;
+if (healthStatus == "Pests damaged") then (yes)
+  :Apply pesticide;
+  :Suggest action: "Pesticide application";
+else (no)
+  :Check other conditions;
+endif
+
+stop
+
+@enduml
+
+/////////////
+
+State Machine Diagram
+@startuml
+
+[*] --> Healthy
+Healthy --> NutrientDeficiency : Nutrient lack
+Healthy --> PestInfestation : Pest damage
+Healthy --> WaterDeficiency : Water shortage
+NutrientDeficiency --> Healthy : Fixed nutrients
+PestInfestation --> Healthy : Pest control
+WaterDeficiency --> Healthy : Water supplied
+
+@enduml
+
+////////////////////
+
+Sequence diagram
+@startuml
+
+actor Farmer
+participant "FarmerActions" as FA
+participant "Fertilizer" as F
+participant "IrrigationSystem" as IS
+participant "PestControl" as PC
+participant "Recommendation" as R
+
+Farmer -> FA : request fertilization
+FA -> F : create Fertilizer("Lime")
+FA -> FA : applyFertilizer(F)
+FA -> Farmer : print "Using fertilizer"
+
+Farmer -> IS : check soil moisture
+IS -> FA : start irrigation
+IS -> Farmer : print "Irrigation started"
+
+Farmer -> PC : check plant health
+PC -> FA : applyPesticide
+PC -> R : suggestAction
+R -> Farmer : print "Pesticide applied"
+
+@enduml
+
+//////////////////////////////
+
+Component diagram
+@startuml
+
+package "FarmerActions" {
+    [FarmerActions] --> [Fertilizer]
+    [FarmerActions] --> [IrrigationSystem]
+    [FarmerActions] --> [PestControl]
+    [FarmerActions] --> [Recommendation]
+}
+
+package "Environment" {
+    [Soil]
+    [Weather]
+    [Plant]
+}
+
+[FarmerActions] --> [Soil]
+[FarmerActions] --> [Weather]
+[FarmerActions] --> [Plant]
+
+@enduml

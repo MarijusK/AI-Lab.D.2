@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+<modelVersion>4.0.0</modelVersion>
+<groupId>org.example</groupId>
+<artifactId>drools-example</artifactId>
+<version>1.0-SNAPSHOT</version>
+
+<dependencies>
+<dependency>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-core</artifactId>
+    <version>8.44.0.Final</version>
+</dependency>
+<dependency>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-compiler</artifactId>
+    <version>8.44.0.Final</version>
+</dependency>
+<dependency>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-api</artifactId>
+    <version>8.44.0.Final</version>
+</dependency>
+</dependencies>
+</project>

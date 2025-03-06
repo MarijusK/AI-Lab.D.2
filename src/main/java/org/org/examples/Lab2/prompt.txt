@@ -1,0 +1,4 @@
+AI Prompt:
+Sistema su Drools taisyklių varikliu padeda ūkininkui priimti sprendimus pagal aplinkos ir augalų duomenis.
+Ji žiūri į dirvožemio drėgmę, pH, oro temperatūrą, lietaus galimybę ir augalų sveikatą, tada sako, ką daryti: laistyti, naudoti trąšas ar kovoti su kenkėjais.
+Naudodama šiuos duomenis, ji nusprendžia, kada imtis veiksmų, kad augalai būtų sveiki ir gerai augtų.
